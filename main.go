@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
+	"strings"
 )
 
 var (
@@ -29,7 +31,14 @@ func main() {
 	} else {
 		os.RemoveAll(fileName)
 	}
-
+	f, err = os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY, 0777)
+	if err != nil {
+		fmt.Println("error OpenFile: ", err)
+		os.Exit(1)
+	}
+	r := strings.NewReader(mfile)
+	io.Copy(f, r)
+	f.Close()
 }
 
 const mfile = `package main
